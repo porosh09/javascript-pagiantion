@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fetch API Sandbox</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  
+  <style>
+  div#paginate {
+    display: block;
+    width: 100%;
+}
+ .currentPage {
+    float: left;
+    border: 1px solid #888;
+    padding: 6px 10px;
+    margin: 0 3px;
+    border-radius: 2px;
+	cursor: pointer;
+}
+.currentPage:hover {
+    background-color: cadetblue;
+    color: #fff;
+}
+.currentPage.active {
+    background-color: cadetblue;
+    color: #fff;
+}
+th {
+    color: #007bff;
+    cursor: pointer;
+}
+th:hover {
+    text-decoration: underline;
+}
+
+  </style>
+  
+</head>
+<body>
+  <div class="container">
+   <div id="table_box_bootstrap">
+   <table class="table" id="myTable">
+   <thead>
+   <tr><th onclick="sortTable(0)"> ID</th><th onclick="sortTable(1)">Name</th><th onclick="sortTable(2)">Email</th></tr>
+   <thead>
+   <tbody id="output">
+   </tbody>
+   </table>
+   <p> <span id="pagi"></span></p>
+   <div id="paginate"></div>
+   </div>
+     <script>
+ 
+
+   </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', displayPaginate());
+  function displayPaginate(){
+  
+  var item = 15;
+	var start = 0;
+	var paginate;
+      fetch('https://jsonplaceholder.typicode.com/comments')
+      .then((res) => res.json())
+      .then((data) => {
+        
+		for(let i =0; i < item; i++ ){
+		console.log(data.length)
+		paginate = data.length
+    
+		  }
+       // });
+      //  document.getElementById('output').innerHTML = output;
+	var totalPage = paginate/item;
+	//displayPaginate(totalPage)
+    
+  
+	 let output = '';
+	for(let i = 0; i < (totalPage-2); i++){
+	console.log([i])
+	  output +='<div class="currentPage" id="thispage'+i+'" onclick="changePage('+Number(i+1)+')">'+i+'</div>';
+	}
+	
+	console.log(output)
+	 document.getElementById('paginate').innerHTML = output;
+	   })
+	
+	}
+	
+	
+	
+  // EVENTS
+document.addEventListener('DOMContentLoaded', getPosts(0, 15));
+
+    function getPosts(startValue, currentItem){
+	var item = currentItem;
+	var start = startValue;
+	var paginate;
+      fetch('https://jsonplaceholder.typicode.com/comments')
+      .then((res) => res.json())
+      .then((data) => {
+        let output = '';
+		for(let i =start; i < item; i++ ){
+		console.log(data.length)
+		paginate = data.length
+     //   data.forEach(function(post){
+          output += `
+		  <tr>
+			<td>${data[i].id}</td>
+			<td>${data[i].name}</td>
+			<td>${data[i].email}</td>
+			
+			</tr>
+			
+          `;
+		  }
+       // });
+        document.getElementById('output').innerHTML = output;
+	
+      })
+    }
+	
+
+	
+function changePage(current){
+	var elements = document.getElementsByClassName('currentPage');
+	
+		for (var i=0; i < elements.length; i++) {
+		elements[i].className = elements[i].className.replace(" active","");
+     }
+ 
+	document.getElementById('thispage'+(current - 1)).classList.add('active');
+	var startItem = current * 15;
+	console.log(startItem)
+	var currentItem = (current+1) * 15;
+	console.log(currentItem)
+	 getPosts(startItem, currentItem);
+
+	}
+   </script>
+   
+ 
+ 
+   
+    
+	<script>
+function sortTable(n) {
+  var table,
+    rows,
+    switching,
+    i,
+    x,
+    y,
+    shouldSwitch,
+    dir,
+    switchcount = 0;
+  table = document.getElementById("myTable");
+  switching = true;
+ 
+  dir = "asc";
+ 
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+   
+    for (i = 1; i < rows.length - 1; i++) { 
+      shouldSwitch = false;
+    
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+     
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+         
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+         
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+    
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+     
+      switchcount++;
+    } else {
+     
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+
+	</script>
+</body>
+</html>

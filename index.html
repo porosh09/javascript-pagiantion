@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fetch API Sandbox</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"  crossorigin="anonymous">
+  
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"  >
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"  >
+   
+   <style>
+   #app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+h2 {
+  margin-top: 20px!important;
+  margin-bottom: 10px;
+}
+
+.orange {
+  color: orange;
+}
+
+th.sortable {
+  color: #ec971f;
+}
+
+span.icon.sort-icon {
+  float: right;
+}
+   </style>
+  
+</head>
+
+
+<body>
+
+<div id="app">
+ <div id="table-wrapper" class="ui container">
+   <h2>API Data Table </h2>
+  <vuetable ref="vuetable"
+    api-url="https://vuetable.ratiw.net/api/users"
+    :fields="fields"
+    pagination-path=""
+    :per-page="10"
+    :sort-order="sortOrder"
+    @vuetable:pagination-data="onPaginationData"
+    @vuetable:loading="onLoading"        
+    @vuetable:loaded="onLoaded"
+  >
+    
+    </vuetable>
+    <vuetable-pagination ref="pagination"
+      @vuetable-pagination:change-page="onChangePage"
+    ></vuetable-pagination>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/vuetable-2@next" type="text/javascript"></script>
+
+<script>
+Vue.use(Vuetable);
+
+new Vue({
+  el: '#app',
+  components: {
+   'vuetable-pagination': Vuetable.VuetablePagination
+  },
+  data: {
+    sortOrder: [
+      {
+          field: 'name',
+          sortField: 'name',
+          direction: 'asc'
+      }
+    ],
+    fields: [
+      '__handle',
+      { 
+        name: 'name', 
+        title: `<span class="icon orange"><i class="fa fa-user"></i></span> Full Name`,
+        sortField: 'name'
+      }, 
+      {
+        name: 'email',
+        title: 'Email',
+        sortField: 'email'
+      },
+      'birthdate','nickname',
+      {
+        name: 'gender',
+        title: 'Gender',
+        sortField: 'gender'
+      },
+      'actions'
+    ],
+  },
+  computed:{
+  /*httpOptions(){
+    return {headers: {'Authorization': "my-token"}} //table props -> :http-options="httpOptions"
+  },*/
+ },
+ methods: {
+    onPaginationData (paginationData) {
+      this.$refs.pagination.setPaginationData(paginationData)
+    },
+    onChangePage (page) {
+      this.$refs.vuetable.changePage(page)
+    },
+ 
+    onLoading() {
+      console.log('loading... show your spinner here')
+    },
+    onLoaded() {
+      console.log('loaded! .. hide your spinner here')
+    }
+  }
+})
+</script>
+</body>
+</html>
